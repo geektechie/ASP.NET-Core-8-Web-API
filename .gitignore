@@ -1,0 +1,33 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / Visual Studio / VS Code
+.vs/
+.idea/
+.vscode/
+*.DotSettings.user
+
+# Test and coverage output
+[Tt]est[Rr]esult*/
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.trx
+
+# Local configuration — never commit a real connection string
+appsettings.Local.json
+appsettings.*.Local.json
+*.pubxml.user
+
+# OS noise
+.DS_Store
+Thumbs.db

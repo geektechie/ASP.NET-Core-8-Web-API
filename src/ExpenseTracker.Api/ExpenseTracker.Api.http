@@ -1,0 +1,132 @@
+@host = https://localhost:7284
+
+### Categories ###############################################################
+
+### List active categories
+GET {{host}}/api/categories
+
+### Include archived ones
+GET {{host}}/api/categories?includeArchived=true
+
+### Create a category
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Coffee",
+  "colorHex": "#795548"
+}
+
+### Rejected: duplicate name (case-insensitive)
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "coffee",
+  "colorHex": "#795548"
+}
+
+### Rejected: not a hex colour
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Pets",
+  "colorHex": "brown"
+}
+
+### Archive a category (keeps history, blocks new expenses)
+PUT {{host}}/api/categories/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "isArchived": true
+}
+
+### Expenses #################################################################
+
+### Record an expense
+POST {{host}}/api/expenses
+Content-Type: application/json
+
+{
+  "amount": 42.50,
+  "spentOn": "2026-10-09",
+  "categoryId": "00000000-0000-0000-0000-000000000000",
+  "description": "Weekly shop",
+  "paymentMethod": "DebitCard",
+  "notes": "Split with Sam"
+}
+
+### Rejected: fractions of a cent
+POST {{host}}/api/expenses
+Content-Type: application/json
+
+{
+  "amount": 12.345,
+  "spentOn": "2026-10-09",
+  "categoryId": "00000000-0000-0000-0000-000000000000",
+  "description": "Odd amount"
+}
+
+### List, newest first
+GET {{host}}/api/expenses?page=1&pageSize=25
+
+### Filter by range, category and payment method
+GET {{host}}/api/expenses?from=2026-10-01&to=2026-10-31&paymentMethod=CreditCard
+
+### Biggest first — "where did it all go?"
+GET {{host}}/api/expenses?from=2026-10-01&to=2026-10-31&sort=AmountDesc
+
+### Free-text search over description and notes
+GET {{host}}/api/expenses?search=shop
+
+### Correct an expense (omitted fields are left alone)
+PUT {{host}}/api/expenses/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "amount": 45.00
+}
+
+### Delete an expense
+DELETE {{host}}/api/expenses/00000000-0000-0000-0000-000000000000
+
+### Budgets ##################################################################
+
+### Set October's limit for a category (idempotent upsert)
+PUT {{host}}/api/budgets
+Content-Type: application/json
+
+{
+  "categoryId": "00000000-0000-0000-0000-000000000000",
+  "month": "2026-10",
+  "limit": 400.00
+}
+
+### List the budgets set for a month
+GET {{host}}/api/budgets/2026-10
+
+### Reports ##################################################################
+
+### Totals for a range, split by category and payment method
+GET {{host}}/api/reports/summary?from=2026-10-01&to=2026-10-31
+
+### Default window (the configured number of days, ending today)
+GET {{host}}/api/reports/summary
+
+### Daily series, zero-filled, ready to plot
+GET {{host}}/api/reports/trend?granularity=Daily&from=2026-10-01&to=2026-10-31
+
+### Monthly series across a year
+GET {{host}}/api/reports/trend?granularity=Monthly&from=2026-01-01&to=2026-12-31
+
+### Budget versus actual, with a projection while the month is running
+GET {{host}}/api/reports/budget-status?month=2026-10
+
+### Current month by default
+GET {{host}}/api/reports/budget-status
+
+### Health ###################################################################
+
+GET {{host}}/health

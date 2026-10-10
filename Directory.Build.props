@@ -1,0 +1,21 @@
+<Project>
+
+  <!--
+    Shared settings for every project in the solution, so a new project picks up the
+    same language level, nullability and documentation rules without being told.
+  -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Produces the XML that Swagger reads to document the API. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- CS1591 (missing XML comment) and CS1573 (some but not all params documented).
+         Members and record parameters are documented where it helps a reader, not
+         everywhere, so neither blanket warning applies. -->
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+  </PropertyGroup>
+
+</Project>
